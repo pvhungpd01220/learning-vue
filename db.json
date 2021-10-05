@@ -1,0 +1,27 @@
+{
+    "books": [
+      { "id": 1,
+        "title": "Math",
+        "author": "nguyen van a",
+        "decription": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "imageUrl": "https://via.placeholder.com/150"
+      },
+      { "id": 2, 
+        "title": "English", 
+        "author": "nguyen van b",
+        "decription": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "imageUrl": "https://via.placeholder.com/150"
+        
+      },
+      { "id": 3, 
+        "title": "Chemistry", 
+        "author": "pham h", 
+        "decription": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        "imageUrl": "https://via.placeholder.com/150"
+      }
+    ],
+    "authors": [
+      { "id": 1, "name": "Hung" },
+      { "id": 2, "name": "Dai" }
+    ]
+  }
