@@ -8,7 +8,7 @@ import UserDetail from '@components/team/UserDetail.vue'
 import Book from '@components/books/Book.vue'
 import NotFound from '@components/layouts/NotFound.vue'
 import root from '@components/provide-example/root.vue'
-
+import Main from '@components/event-bus-example/main.vue'
 
 const routes = [
   {
@@ -57,6 +57,12 @@ const routes = [
   {
     path: '/:catchAll(.*)', // truong hop ko tim thay url thi se nhay vao component nay
     component: NotFound,
+  },
+  {
+    path: '/',
+    alias: ['/main'],
+    name: 'main',
+    component: Main,
   },
 ]
 

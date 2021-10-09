@@ -12,6 +12,12 @@ module.exports = {
         "@services": path.resolve(__dirname, "./src/services"),
       },
       extensions: ['.js', '.vue', '.json']
-    }
-  }
+    },
+    plugins: [
+      require('unplugin-element-plus/webpack')({
+        // options
+      }),
+    ],
+  },
+
 };

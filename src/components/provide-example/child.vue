@@ -2,6 +2,7 @@
   <div>
     <h1>Time in JST</h1>
     <p>data: {{ timeFormat }}</p>
+    <p>date: {{ date }}</p>
   </div>
 </template>
 
@@ -13,14 +14,16 @@ export default defineComponent({
   setup() {
     const data = reactive({
       time:'',
-      
-      timeFormat: computed(() => data.time.toLocaleString('hn-VN', { timeZone: "Asia/Tokyo" })),
+      timeFormat: computed(() => data.time.toLocaleString('JP', { timeZone: "Asia/Tokyo" })),
     })
 
     data.time = inject('time', '')
 
+    const date = inject('date', null)
+
     return {
       ...toRefs(data),
+      date,
     }
   },
 })

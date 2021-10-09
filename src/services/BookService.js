@@ -4,8 +4,13 @@ export default {
   getBooks() {
     return http.get('/books')
   },
-  // getBook(bookId) {
-  //   return apiClient.get('/books/')
-  // }
-  // createBook
+  createBook(data) {
+    return http.post('/books', data)
+  },
+  deleteBook(id) {
+    return http.delete(`/books/${id}`)
+  },
+  editBook(id, data) {
+    return http.put(`/books/${id}`, data)
+  }
 }
