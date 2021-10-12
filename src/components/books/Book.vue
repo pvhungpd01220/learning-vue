@@ -3,7 +3,7 @@
     <div class="bookItem" v-for="item in listBooks" :key="item.id">
       <div class="orderNumber">#1</div>
       <img src="https://via.placeholder.com/100" alt="placeholder" />
-      <div class="bookInfo">
+      <div v-if="!statusOpenEdit[item.id]" class="bookInfo">
         <h3>{{ item.title }}</h3>
         <div class="author">{{ item.author }}</div>
         <p class="description">
@@ -11,27 +11,27 @@
         </p>
       </div>
       <div class="deleteBook">
-        <button @click="editBook(item.id)">
+        <button @click="editBook(item)">
           <span v-if="isShowDetails">
             Edit
           </span>
         </button>
         <button @click="deleteBook(item.id)">X</button>
       </div>
-      <form v-if="isShowDetails" @submit.prevent="submitData">
+      <form v-if="statusOpenEdit[item.id]" @submit.prevent="submitData">
         <div class="formBook">
           <label>Name: </label>
-          <input v-model="title" type="text" />
+          <input v-model="updateBook.title" type="text" />
         </div>
         <div class="formBook">
           <label>Book Name: </label>
-          <input v-model="author" type="text" />
+          <input v-model="updateBook.author" type="text" />
         </div>
         <div class="formBook">
           <label>Description: </label>
-          <input v-model="decription" type="textarea" />
+          <input v-model="updateBook.decription" type="textarea" />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" @click="submitUpdateBook">Submit</button>
       </form>
     </div>
     <book-form />
@@ -56,7 +56,8 @@ export default defineComponent({
     const bus = useEmitter();
     const data = reactive({
       listBooks: [],
-      isShowDetails: false,
+      statusOpenEdit: {},
+      updateBook: {},
     });
 
     onMounted(() => {
@@ -88,20 +89,30 @@ export default defineComponent({
         });
     };
 
-    const editBook = (id) => {
-      BookService.editBook(id)
+    const editBook = (item) => {
+      data.statusOpenEdit[item.id] = !data.statusOpenEdit[item.id]
+      data.updateBook = Object.assign({}, item)
+    };
+
+    const submitUpdateBook = () => {
+      BookService.editBook(data.updateBook.id, data.updateBook)
         .then(function(response) {
           // handle success
-          console.log(response);
-          data.listBooks = data.listBooks.filter((item) => item.id == id);
-          data.isShowDetails = !data.isShowDetails
-          console.log(data.listBooks);
+          const updateItem = data.listBooks.find((item) => item.id === data.updateBook.id);
+          if (updateItem) {
+            updateItem.title = data.updateBook.title
+            updateItem.author = data.updateBook.author
+            updateItem.decription = data.updateBook.decription
+          }
+          data.statusOpenEdit[data.updateBook.id] = false
+
+          // data.isShowDetails = !data.isShowDetails
         })
         .catch(function(error) {
           // handle error
           console.log(error);
         });
-    };
+    }
 
     onMounted(() => {
       bus.on("add-book", addBook);
@@ -116,6 +127,7 @@ export default defineComponent({
       getListBook,
       deleteBook,
       editBook,
+      submitUpdateBook,
     };
   },
 });
