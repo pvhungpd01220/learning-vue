@@ -12,7 +12,7 @@
       </div>
       <div class="deleteBook">
         <button @click="editBook(item)">
-          <span v-if="isShowDetails">
+          <span v-if="statusOpenEdit">
             Edit
           </span>
         </button>
@@ -21,17 +21,17 @@
       <form v-if="statusOpenEdit[item.id]" @submit.prevent="submitData">
         <div class="formBook">
           <label>Name: </label>
-          <input v-model="updateBook.title" type="text" />
+          <input v-model="updateBook[item.id].title" type="text" />
         </div>
         <div class="formBook">
           <label>Book Name: </label>
-          <input v-model="updateBook.author" type="text" />
+          <input v-model="updateBook[item.id].author" type="text" />
         </div>
         <div class="formBook">
           <label>Description: </label>
-          <input v-model="updateBook.decription" type="textarea" />
+          <input v-model="updateBook[item.id].decription" type="textarea" />
         </div>
-        <button type="submit" @click="submitUpdateBook">Submit</button>
+        <button type="submit" @click="submitUpdateBook(item.id)">Submit</button>
       </form>
     </div>
     <book-form />
@@ -90,22 +90,26 @@ export default defineComponent({
     };
 
     const editBook = (item) => {
-      data.statusOpenEdit[item.id] = !data.statusOpenEdit[item.id]
-      data.updateBook = Object.assign({}, item)
-    };
+      data.statusOpenEdit[item.id] = !data.statusOpenEdit[item.id] // true -> show form edit
+      data.updateBook[item.id] = Object.assign({}, item)  // copy data cua item sang update book
+      console.log(data.updateBook)
+    }
 
-    const submitUpdateBook = () => {
-      BookService.editBook(data.updateBook.id, data.updateBook)
+    const submitUpdateBook = (id) => {
+      /* eslint-disable no-debugger */
+      BookService.editBook(id, data.updateBook[id])
         .then(function(response) {
           // handle success
-          const updateItem = data.listBooks.find((item) => item.id === data.updateBook.id);
-          if (updateItem) {
-            updateItem.title = data.updateBook.title
-            updateItem.author = data.updateBook.author
-            updateItem.decription = data.updateBook.decription
-          }
-          data.statusOpenEdit[data.updateBook.id] = false
+          console.log(response);
 
+          const updateItem = data.listBooks.find((item) => item.id === id);
+          if (updateItem) {
+            updateItem.title = data.updateBook[id].title
+            updateItem.author = data.updateBook[id].author
+            updateItem.decription = data.updateBook[id].decription
+          }
+          data.statusOpenEdit[id] = false
+          data.updateBook[id] = {}
           // data.isShowDetails = !data.isShowDetails
         })
         .catch(function(error) {
