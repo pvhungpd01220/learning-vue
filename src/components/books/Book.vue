@@ -2,7 +2,7 @@
   <div class="listBook">
     <div class="bookItem" v-for="item in listBooks" :key="item.id">
       <div class="orderNumber">#1</div>
-      <img src="https://via.placeholder.com/100" alt="placeholder" />
+      <img  class="imgBook" src="https://via.placeholder.com/100" alt="placeholder" />
       <div v-if="!statusOpenEdit[item.id]" class="bookInfo">
         <h3>{{ item.title }}</h3>
         <div class="author">{{ item.author }}</div>
@@ -18,24 +18,12 @@
         </button>
         <button @click="deleteBook(item.id)">X</button>
       </div>
-      <form v-if="statusOpenEdit[item.id]" @submit.prevent="submitData">
-        <div class="formBook">
-          <label>Name: </label>
-          <input v-model="updateBook[item.id].title" type="text" />
-        </div>
-        <div class="formBook">
-          <label>Book Name: </label>
-          <input v-model="updateBook[item.id].author" type="text" />
-        </div>
-        <div class="formBook">
-          <label>Description: </label>
-          <input v-model="updateBook[item.id].decription" type="textarea" />
-        </div>
-        <button type="submit" @click="submitUpdateBook(item.id)">Submit</button>
-      </form>
+       <book-form
+        v-if="statusOpenEdit[item.id]"
+        :book-data="updateBook[item.id]"
+        @update-book="submitUpdateBook"
+      />
     </div>
-    <book-form />
-    <book-item />
   </div>
 </template>
 
@@ -43,14 +31,12 @@
 import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import BookService from "@services/BookService";
 import BookForm from "@components/books/BookForm.vue";
-import BookItem from "@components/books/BookItem.vue";
 import useEmitter from "@/composables/useEmitter";
 
 export default defineComponent({
   name: "Book",
   components: {
     "book-form": BookForm,
-    "book-item": BookItem,
   },
   setup() {
     const bus = useEmitter();
@@ -90,33 +76,35 @@ export default defineComponent({
     };
 
     const editBook = (item) => {
-      data.statusOpenEdit[item.id] = !data.statusOpenEdit[item.id] // true -> show form edit
-      data.updateBook[item.id] = Object.assign({}, item)  // copy data cua item sang update book
-      console.log(data.updateBook)
-    }
+      data.statusOpenEdit[item.id] = !data.statusOpenEdit[item.id]; // true -> show form edit
+      data.updateBook[item.id] = Object.assign({}, item); // copy data cua item sang update book
+      console.log(data.updateBook);
+    };
 
-    const submitUpdateBook = (id) => {
+    const submitUpdateBook = (bookData) => {
       /* eslint-disable no-debugger */
-      BookService.editBook(id, data.updateBook[id])
+      // data = ?
+      // data = { a: 1, b: 2, c: 2 } phải năm đc data có cấu trúc như thế nào 
+      BookService.editBook(bookData.id, bookData)
         .then(function(response) {
           // handle success
           console.log(response);
-
-          const updateItem = data.listBooks.find((item) => item.id === id);
-          if (updateItem) {
-            updateItem.title = data.updateBook[id].title
-            updateItem.author = data.updateBook[id].author
-            updateItem.decription = data.updateBook[id].decription
+          // Tìm item book trong list book cần update
+          // gan data cho item book do
+          const updateItemBook = data.listBooks.find((item) => item.id === bookData.id);
+          console.log('aaa', updateItemBook)
+          if (updateItemBook && response.status === 200) {
+            updateItemBook.title = bookData.title
+            updateItemBook.author = bookData.author
+            updateItemBook.decription = bookData.decription
           }
-          data.statusOpenEdit[id] = false
-          data.updateBook[id] = {}
-          // data.isShowDetails = !data.isShowDetails
+          data.statusOpenEdit[bookData.id] = false
         })
         .catch(function(error) {
           // handle error
           console.log(error);
         });
-    }
+    };
 
     onMounted(() => {
       bus.on("add-book", addBook);
@@ -143,9 +131,13 @@ export default defineComponent({
     display: flex;
     padding-bottom: 20px;
     position: relative;
+    .imgBook {
+      width: 100px;
+      height: 100px;
+    }
     .orderNumber {
-      align-self: center;
       margin-right: 10px;
+      margin-top: 10px;
       font-weight: 600;
     }
     .deleteBook {
@@ -158,6 +150,7 @@ export default defineComponent({
         padding: 10px;
         background-color: red;
       }
+      
     }
     .editBook {
       margin-right: 10px;
@@ -179,4 +172,20 @@ export default defineComponent({
     }
   }
 }
+form {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    padding: 10px;
+    margin-left: 50px;
+    .formBook {
+      margin: 10px;
+      input {
+        width: 100%;
+      }
+    }
+    button {
+      padding: 10px;
+      background-color: blueviolet;
+      color: white;
+    }
+  }
 </style>

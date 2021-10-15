@@ -1,18 +1,5 @@
 {
-  "books": [
-    {
-      "id": 1,
-      "title": "dai pham123444",
-      "author": "eeeff",
-      "decription": "fff"
-    },
-    {
-      "id": 2,
-      "title": "aawwwwsdf2222",
-      "author": "aaasdf",
-      "decription": "aasdf"
-    }
-  ],
+  "books": [],
   "authors": [
     {
       "id": 1,
